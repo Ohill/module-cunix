@@ -52,11 +52,8 @@ void   *list_shift(node_t **head)
 void   *list_remove(node_t **head, int pos)
 {
   node_t *cur_elem = *head;
-  int i = 0;
-  while (i < pos){
+  for(int i = 0; i < pos; i++)
     cur_elem = cur_elem->next;
-    i++;
-  }
   node_t *tmp = cur_elem->next;
   cur_elem->next = tmp->next;
   free(tmp);
@@ -72,7 +69,8 @@ void    list_print(node_t *head)
 void    list_visitor(node_t *head, void (*fp)(void *data))
 {
  node_t *cur_elem = head;
- while (cur_elem->next != NULL){
+ while (cur_elem->next != NULL)
+ {
    fp(cur_elem->data);
    cur_elem = cur_elem->next;
  }
