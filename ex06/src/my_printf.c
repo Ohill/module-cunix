@@ -2,12 +2,9 @@
 #include <stdio.h>
 int my_printf(const char *format, ...)
 {
-   va_list arg;
-  int done;
-
-  va_start (arg, format);
-  done = vfprintf (stdout, format, arg);
-  va_end (arg);
-
-  return done;
+  va_list lst;
+  va_start (lst, format);
+  int res = vfprintf (stdout, format, lst);
+  va_end (lst);
+  return res;
 }
