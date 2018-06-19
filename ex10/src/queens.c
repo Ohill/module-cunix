@@ -1,6 +1,4 @@
 #include "../include/queens.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 int check(Cell **table, int row, int col, int n)
 {
@@ -55,10 +53,9 @@ void backtrack(Cell **table, int n, int queen_row, int queen_col)
   {
 	    if (!check(table, queen_row, i, n))
 		  {
-        flg = 1;
-			  table[queen_row][i].figure = 'Q';
-        clear_row(table, queen_row, i);
-      }
+        		flg = 1;
+			table[queen_row][i].figure = 'Q';
+      		  }
       else if(table[queen_row][i].figure == 'Q')
       {
         flg = 1;
@@ -84,12 +81,6 @@ void change_queen(Cell **table, int row, int n)
     }
   backtrack(table, n, row, i + 1);  
 }
-
-void clear_row(Cell **table, int row, int col)
-{
-  for(int i = 0; i < col; i++)
-    table[row][i].figure = 'E';
-} 
 
 void place_queens(Cell **table, int size)
 {
