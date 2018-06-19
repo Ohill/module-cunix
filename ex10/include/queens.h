@@ -19,5 +19,9 @@ typedef struct Cell {
  *  Adding means, that you set Cell.figure to 'Q'
  */
 void place_queens(Cell **table, int size);
+void backtrack(Cell **table, int n, int queen_row, int queen_col);
+int check(Cell **table, int row, int col, int n);
+void clear_row(Cell **table, int row, int col);
+void change_queen(Cell **table, int row, int n);
 
 #endif
