@@ -31,7 +31,7 @@ int shell_env (char **args)
 		printf("%s: %s\n", tmp->data, hash_get(hash_table_of_export, tmp->data));
 		tmp = tmp->next;
 	}
-  return 1; 
+	return 1; 
 }
 
 char *without_first_char(char *str) 
@@ -58,66 +58,65 @@ int shell_echo(char ** args)
 
 int check_export_args(char * arg)
 {
-  int i = 0;
-  int size = strlen(arg);
-  for (i; i < size; i++)
-    if (arg[i] == '=' && i+1 != size)
-    {
-      i = -1;
-      break;
-    }
-  return i == -1 ? 0 : 1;
+	int i = 0;
+	int size = strlen(arg);
+	for (i; i < size; i++)
+		if (arg[i] == '=' && i+1 != size)
+		{
+			i = -1;
+			break;
+		}
+	return i == -1 ? 0 : 1;
 }
 
 int shell_export(char **args)
 {
-  int i = 1;
-  while(1)
-  {
-    if(args[i] == NULL)
-      break;
-    else if (check_export_args(args[i]))
-      return printf("minishell: bad assigment\n"); 
-	  char *token;
-	  char s[2] = "=";
-	  token = strtok(args[i], s);
-	  if (keys_of_export_lst == NULL && hash_table_of_export == NULL)
-	  {
-		  keys_of_export_lst = list_create(token);
-		  hash_table_of_export = hash_create(18);
-	  }
-	  else if (list_check(keys_of_export_lst, token))
-		  list_push(keys_of_export_lst, token);
-	  char *tmp = token;
-	  token = strtok(NULL, s);
-	  hash_set(hash_table_of_export, tmp, token);
-    i++;
-  }
-  return 1;
+	int i = 1;
+	while(1)
+	{
+		if(args[i] == NULL)
+		break;
+		else if (check_export_args(args[i]))
+			return printf("minishell: bad assigment\n"); 
+		  char *token;
+		  char s[2] = "=";
+		  token = strtok(args[i], s);
+		  if (keys_of_export_lst == NULL && hash_table_of_export == NULL)
+		  {
+			  keys_of_export_lst = list_create(token);
+			  hash_table_of_export = hash_create(18);
+		  }
+		  else if (list_check(keys_of_export_lst, token))
+			  list_push(keys_of_export_lst, token);
+		  char *tmp = token;
+		  token = strtok(NULL, s);
+		  hash_set(hash_table_of_export, tmp, token);
+		i++;
+	}
+	return 1;
 }
 
 int shell_ls(char **args)
 {
-  struct dirent **name;
-  int n, i = 0;
-  if (args[1] == NULL)
-    n = scandir(".", &name, NULL, alphasort);
-  else
-    n = scandir(args[1], &name, NULL, alphasort);
-  while (i < n)
-  {
-    if (strcmp(name[i]->d_name, ".") && strcmp(name[i]->d_name, ".."))
-    {
-      write (1, name[i]->d_name, strlen(name[i]->d_name));
-      if (i != n-1)
-        write (1, " ", 1);
-    }
-    free(name[i]);
-    i++;
-  }
-  write (1, "\n", 1);
-  free(name);
-  return 1;
+	struct dirent **name;
+	int n, i = 0;
+	if (args[1] == NULL)
+		n = scandir(".", &name, NULL, alphasort);
+	else n = scandir(args[1], &name, NULL, alphasort);
+	while (i < n)
+	{
+		if (strcmp(name[i]->d_name, ".") && strcmp(name[i]->d_name, ".."))
+		{
+			write (1, name[i]->d_name, strlen(name[i]->d_name));
+			if (i != n-1)
+				write (1, " ", 1);
+		}
+		free(name[i]);
+		i++;
+	}
+	write (1, "\n", 1);
+	free(name);
+	return 1;
 }
 
 int (*builtin_function[]) (char **) = {
@@ -125,7 +124,7 @@ int (*builtin_function[]) (char **) = {
 	&shell_echo,
 	&shell_export,
 	&shell_env,
-  &shell_ls
+  	&shell_ls
 };
 
 char **split_command_line(char *command)
@@ -180,12 +179,12 @@ int shell_execute(char **args)
 
 void signalHandler(int sign)
 {
-  if (sign == SIGINT)
-  {
-    puts("");
-    write(1, "$_>", 3);
-    signal(SIGINT, signalHandler);
-  }
+	if (sign == SIGINT)
+	{
+		puts("");
+		write(1, "$_>", 3);
+		signal(SIGINT, signalHandler);
+	}
 }
 
 void shell_loop(void)
@@ -196,7 +195,7 @@ void shell_loop(void)
 	while (status)
 	{
 		printf("$_> ");
-    signal(SIGINT, signalHandler);
+    		signal(SIGINT, signalHandler);
 		command_line = read_command_line();
 			if ( strcmp(command_line, "") == 0 )
 				continue;
