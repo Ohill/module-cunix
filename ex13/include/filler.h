@@ -42,7 +42,6 @@ typedef struct  strategy_s
 {
   pos_t my_pos;
   pos_t enemy_pos;
-  pos_t result;
   int up;
   int down;
   int left;
