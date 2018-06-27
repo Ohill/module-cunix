@@ -95,19 +95,6 @@ void map_destroy(map_t *map)
   map->array = NULL;
 }
 
-void printlog(const char *filename, const char *mode, const char *format, ...)
-{
-  va_list arg;
-  FILE *logg;
-
-  logg = fopen(filename, mode);
-  va_start(arg, format);
-  vfprintf(logg, format, arg);
-  va_end(arg);
-
-  fclose(logg);
-}
-
 int set_nonblocking(int fd)
 {
   int flg;
