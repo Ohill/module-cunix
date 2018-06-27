@@ -41,7 +41,6 @@ typedef struct  filler_s
 typedef struct  strategy_s
 {
   pos_t my_pos;
-  pos_t enemy_pos;
   int up;
   int down;
   int left;
