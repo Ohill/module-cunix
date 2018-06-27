@@ -60,10 +60,6 @@ void read_input(filler_t* filler);
 /*Functions for strategy */
 strategy_t *strategy_init();
 void destroy_strategy(strategy_t *tmp);
-bool check_in_quad_sq(pos_t elem, int y_centr, int x_centr);
-bool check_in_third_sq(pos_t elem, int y_centr, int x_centr);
-bool check_in_second_sq(pos_t elem, int y_centr, int x_centr);
-bool check_in_first_sq(pos_t elem, int y_centr, int x_centr);
 void check_all(strategy_t *strategy);
 
 
