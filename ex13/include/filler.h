@@ -91,4 +91,5 @@ void fatal(char *msg);
 void сreate_filler(filler_t *filler);
 void destroy_filler(filler_t *filler);
 void destroy_req(req_t *req);
+
 #endif // _FILLER_H_
