@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <ctype.h>
 #include "filler.h"
-#include <stdio.h>
-#include <string.h>
 
 int find_size(char *dist, char *source, int start)
 {

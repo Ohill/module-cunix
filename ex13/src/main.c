@@ -1,6 +1,4 @@
-#include "filler.h"
 #include "my_string.h"
-#include <stdio.h>
 
 int main()
 {

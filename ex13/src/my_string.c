@@ -1,7 +1,4 @@
 #include "my_string.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 stream_t *string_init()
 {
@@ -28,19 +25,26 @@ stream_t *string_create(char *str)
   return tmp;
 }
 
-void string_append(stream_t *ptr, char *str)
+void 			string_append(stream_t *s, char *str)
 {
-  int size = strlen(str), i;
+  	int 		len;
 
-  for(i = 0; i < size; i++)
-    ptr->str[ptr->size+i] = str[i];
-  ptr->size += size;
-  ptr->str[ptr->size] = '\0';
+	len = strlen(str);
+  	if(s->size + len > s->limit)
+  	{
+    		s->limit = s->limit * 2 + len;
+    		s->str = realloc( s->str, s->limit * sizeof(char));
+    		s->str[s->size + len] = 0;
+  	}
+
+    for(int i = 0; i < len; i++)
+    		s->str[s->size + i] = str[i];
+  	s->size += len;
+  	s->str[s->size + len] = 0;
 }
 
 void string_destroy(stream_t *str)
 {
   free(str->str);
   free(str);
-  str = NULL;
 }

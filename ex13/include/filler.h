@@ -1,6 +1,7 @@
 #ifndef _FILLER_H_
 #define _FILLER_H_
 
+#include "libs.h"
 
 typedef struct  map_s
 {
@@ -37,9 +38,35 @@ typedef struct  filler_s
   int           find_enemy;
 }               filler_t;
 
+typedef struct  strategy_s
+{
+  pos_t my_pos;
+  pos_t enemy_pos;
+  pos_t result;
+  int up;
+  int down;
+  int left;
+  int right;
+  int r_d_diag;
+  int l_d_diag;
+  int r_u_diag;
+  int l_u_diag;
+  int start;
+}               strategy_t;
+
 /*Functions for reading*/
 req_t*          read_request(filler_t *filler);
 void            read_input(filler_t* filler);
+
+/*Functions for strategy */
+strategy_t *strategy_init();
+void destroy_strategy(strategy_t *tmp);
+bool check_in_quad_sq(pos_t elem, int y_centr, int x_centr);
+bool check_in_third_sq(pos_t elem, int y_centr, int x_centr);
+bool check_in_second_sq(pos_t elem, int y_centr, int x_centr);
+bool check_in_first_sq(pos_t elem, int y_centr, int x_centr);
+void check_all(strategy_t *strategy);
+
 
 /*Functions for parsing*/
 req_t*          parse_all(char *all);
@@ -52,12 +79,14 @@ void            map_destroy(map_t *map);
 
 /*Functions for game logic*/
 void            start_game(filler_t *filler);
-pos_t           play(req_t *core);
+pos_t           play(strategy_t *strategy, req_t *core);
 
 /*Functions for printing*/
 void            print_pos(pos_t p);
 
 /*Tools*/
+int check_free_space(map_t *map, map_t *new_elem, pos_t p);
+int check_connection(map_t *map, map_t *new_elem, pos_t pos, char symbol);
 int             set_nonblocking(int fd);
 void            fatal(char *msg);
 void            create_filler(filler_t *filler);

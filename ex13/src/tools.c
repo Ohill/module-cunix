@@ -1,11 +1,4 @@
 #include "my_string.h"
-#include "filler.h"
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <fcntl.h>
 
 void create_filler(filler_t *filler)
 {
@@ -18,6 +11,41 @@ void destroy_filler(filler_t *filler)
   string_destroy(filler->current_stream);
 }
 
+int check_free_space(map_t *map, map_t *new_elem, pos_t p)
+{
+  for(int i = 0; i < new_elem->h; i++)
+    for(int j = 0; j < new_elem->w; j++)
+      if(new_elem->array[i][j] == '*')
+      {
+        if(i + p.y < map->h && j + p.x < map->w && i + p.y >= 0 && j + p.x >= 0)
+        {
+          if(map->array[i + p.y][j + p.x] != '.')
+            return -1;
+        }
+        else
+         return -1;
+      }
+  return 0;
+}
+
+int check_connection(map_t *map, map_t *new_elem, pos_t pos, char symbol)
+{
+  for(int i = 0; i < new_elem->h; i++)
+    for(int j = 0; j < new_elem->w; j++)
+      if(new_elem->array[i][j] != '.')
+      {
+        if(i+pos.y+1 < map->h && map->array[i+pos.y+1][j+pos.x] == symbol)
+            return 0;
+        if (i+pos.y-1 >= 0 && map->array[i+pos.y-1][j+pos.x] == symbol)
+            return 0;
+        if (j+pos.x+1 < map->w && map->array[i+pos.y][j+pos.x+1] == symbol)
+            return 0;
+        if (j+pos.x-1 >= 0 && map->array[i+pos.y][j+pos.x-1] == symbol)
+            return 0;
+      }
+
+  return -1;
+}
 
 
 void destroy_req(req_t *req)

@@ -1,10 +1,4 @@
 #include "my_string.h"
-#include <unistd.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <string.h>
-
 
 int finish_of_read(stream_t* buf)
 {

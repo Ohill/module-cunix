@@ -1,56 +1,137 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/stat.h>
-#include "filler.h"
 #include "my_string.h"
 
-int check_free_space(map_t *map, map_t *new_elem, pos_t p)
+pos_t play(strategy_t *strategy, req_t *core)
 {
-  for(int i = 0; i < new_elem->h; i++)
-    for(int j = 0; j < new_elem->w; j++)
-      if(new_elem->array[i][j] == '*')
-      {
-        if(i+p.y < map->h && j+p.x < map->w && i+p.y >= 0 && j+p.x >= 0)
-        {
-          if(map->array[i+p.y][j+p.x] != '.')
-            return -1;
-        }
-        else
-         return -1;
-      }
-  return 0;
-}
-
-int check_connection(map_t *map, map_t *new_elem, pos_t pos, char symbol)
-{
-  for(int i = 0; i < new_elem->h; i++)
-    for(int j = 0; j < new_elem->w; j++)
-      if(new_elem->array[i][j] != '.')
-      {
-        if(i+pos.y+1 < map->h && map->array[i+pos.y+1][j+pos.x] == symbol)
-            return 0;
-        if (i+pos.y-1 >= 0 && map->array[i+pos.y-1][j+pos.x] == symbol)
-            return 0;
-        if (j+pos.x+1 < map->w && map->array[i+pos.y][j+pos.x+1] == symbol)
-            return 0;
-        if (j+pos.x-1 >= 0 && map->array[i+pos.y][j+pos.x-1] == symbol)
-            return 0;
-      }
-
-  return -1;
-}
-
-pos_t play(req_t *core)
-{
-  pos_t res;
   FILE *logger;
+  int flag = 0;
+  strategy->result.x = -1;
+  strategy->result.y = -1;
+  pos_t res;
+
   res.x = -1;
   res.y = -1;
-
   logger = fopen("filler.log", "a");
   fprintf(logger, "Play\n");
   fprintf(logger, "core->map.h = %d, core->map.w = %d", core->map.h, core->map.w);
   fclose(logger);
+
+  if(strategy->start == 0)
+  {
+    for(int i = 0; i < core->map.h; i++)
+    {
+      for(int j = 0; j < core->map.w; j++)
+      {
+        strategy->my_pos.y = i;
+        strategy->my_pos.x = j;
+
+        if(core->map.array[i][j] == core->symbol)
+        {
+          flag = 1;
+          break;
+        }
+       if(flag)
+         break;
+      }
+    }
+    strategy->start = 1;
+  }
+  check_all(strategy);
+      if(strategy->l_d_diag == 0)
+      {
+        for(int i = strategy->my_pos.y; i < core->map.h; i++)
+          for(int j = strategy->my_pos.x; j >= 0; j--)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+
+      if (strategy->r_u_diag == 0)
+      {
+        for(int i = strategy->my_pos.y; i < core->map.h; i--)
+          for(int j = strategy->my_pos.x; j < core->map.w; j++)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+
+      if (strategy->r_d_diag == 0)
+      {
+        for(int i = strategy->my_pos.y; i < core->map.h; i++)
+          for(int j = strategy->my_pos.x; j < core->map.w ; j++)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+
+      if (strategy->l_u_diag == 0)
+      {
+        for(int i = strategy->my_pos.y; i >= 0; i--)
+          for(int j = strategy->my_pos.x; j >= 0; j--)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+
+      if(strategy->right == 0)
+      {
+          int i = strategy->my_pos.y;
+          for(int j = strategy->my_pos.x; j < core->map.w; j++)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+
+      if(strategy->left == 0)
+      {
+          int i = strategy->my_pos.y;
+          for(int j = strategy->my_pos.x; j >= 0; j--)
+          {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+          }
+      }
+      
+      if(strategy->up == 0)
+      {
+        int j = strategy->my_pos.x;
+        for(int i  = strategy->my_pos.y; i >= 0; i--)
+        {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+        }
+      }
+
+      if(strategy->down == 0)
+      {
+        int j = strategy->my_pos.x;
+        for(int i  = strategy->my_pos.y; i <= core->map.h; i++)
+        {
+            res.x = j;
+            res.y = i;
+            if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol))
+              return res;
+        }
+      }
+
   for(int i = 0; i < core->map.h; i++)
     for(int j = 0; j < core->map.w; j++)
     {
@@ -68,10 +149,43 @@ pos_t play(req_t *core)
         return res;
       }
     }
-  res.x = -1;
-  res.y = -1;
+  strategy->result.x = -1;
+  strategy->result.y = -1;
 
-  return res;
+  return strategy->result;
+}
+
+void check_all(strategy_t *strategy)
+{
+  srand(time(NULL));
+  strategy->l_d_diag = rand() % 2;
+  strategy->r_d_diag = rand() % 2;
+  strategy->l_u_diag = rand() % 2;
+  strategy->r_u_diag = rand() % 2;
+  strategy->right = rand() % 2;
+  strategy->left = rand() % 2;
+  strategy->down = rand() % 2;
+  strategy->up = rand() % 2;
+}
+
+bool check_in_first_sq(pos_t elem, int y_centr, int x_centr)
+{
+  return x_centr >= elem.x && y_centr >= elem.y ? true : false;
+}
+
+bool check_in_second_sq(pos_t elem, int y_centr, int x_centr)
+{
+  return x_centr >= elem.x && y_centr <= elem.y ? true : false;
+}
+
+bool check_in_third_sq(pos_t elem, int y_centr, int x_centr)
+{
+  return x_centr <= elem.x && y_centr >= elem.y ? true : false;
+}
+
+bool check_in_quad_sq(pos_t elem, int y_centr, int x_centr)
+{
+  return x_centr <= elem.x && y_centr <= elem.y ? true : false;
 }
 
 void start_game(filler_t *filler)
@@ -83,6 +197,7 @@ void start_game(filler_t *filler)
 
   printlog("filler.log", "w", "Smart game\n");
   set_nonblocking(0);
+  strategy_t *strategy = strategy_init();
   while(1)
   {
     FD_ZERO(&rfds);
@@ -100,7 +215,7 @@ void start_game(filler_t *filler)
     {
       req = read_request(filler);
       if(req) {
-        position = play(req);
+        position = play(strategy, req);
         filler->status = 1;
       }
     }
@@ -115,4 +230,5 @@ void start_game(filler_t *filler)
       filler->status = 0;
     }
   }
+  destroy_strategy(strategy);
 }
