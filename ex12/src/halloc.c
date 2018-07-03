@@ -1,8 +1,9 @@
-#define NALLOC 1024
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
 #include <unistd.h>
+
+#define NALLOC 1024
 
 union header
 {
@@ -21,9 +22,12 @@ void free(void* ptr)
 {
   if (ptr == NULL)
     return;
+  
   union header *iter, *block;
+  
   iter = first;
   block = (union header*)ptr - 1;
+  
   while (block <= iter || block >= iter->meta.next) 
   {
     if ((block > iter || block < iter->meta.next) &&
@@ -31,6 +35,7 @@ void free(void* ptr)
       break;
     iter = iter->meta.next;
   }
+  
   if (block + block->meta.len == iter->meta.next)
   {
     block->meta.len += iter->meta.next->meta.len;
@@ -49,9 +54,12 @@ void *halloc(size_t size)
 {
   if (size == 0)
     return NULL;
+  
   union header *p, *prev;
+  
   prev = first;
   unsigned true_size = (size+sizeof(union header)-1)/sizeof(union header)+1;
+  
   if (first == NULL)
   {
     prev = &list;
@@ -59,7 +67,9 @@ void *halloc(size_t size)
     list.meta.next = first;
     list.meta.len = 0;
   }
+  
   p = prev->meta.next;
+  
   while (1)
   {
     if (p->meta.len >= true_size)
@@ -92,9 +102,9 @@ void *halloc(size_t size)
       free((void *)(block + 1));
       p = first;
     }
-
     prev = p;
     p = p->meta.next;
   }
+  
   return NULL;
 }
